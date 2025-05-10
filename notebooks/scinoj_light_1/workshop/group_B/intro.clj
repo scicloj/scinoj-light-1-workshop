@@ -34,30 +34,40 @@
     :usd_pledged_real 0.0,
     :usd_goal_real 500.0}])
 
+
+data
+
 (type data)
 
 (vector? data)
 
+(count data)
+
+(nth data 0)
+
 (data 0)
 
-(first data)
+(fn? data)
 
-(type (first data))
+(def data0
+  (data 0))
 
-(map? (first data))
+data0
 
-(keys (first data))
+(type data0)
 
-(second (keys (first data)))
+(keys data0)
 
-(type (second (keys (first data))))
+(vals data0)
 
-(:category (first data))
 
-(-> data first :category)
+(vals (data 0))
 
-;; -> is a macro
+(-> 0
+    data
+    vals)
 
-(macroexpand
- ' (-> data first :category))
-
+(macroexpand-1
+ '(-> 0
+    data
+    vals))
