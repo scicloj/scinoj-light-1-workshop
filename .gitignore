@@ -1,0 +1,6 @@
+.cpcache
+.nrepl-port
+docs/.clay*
+.calva
+.clj-kondo
+.lsp
