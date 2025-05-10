@@ -54,3 +54,100 @@ data/processed-projects
                                           (tcc/eq "successful")
                                           tcc/mean))})
     (tc/order-by [:rate-of-success] :desc))
+
+
+(-> data/processed-projects
+    :category
+    seq)
+
+
+(-> data/processed-projects
+    :category
+    second)
+
+(-> data/processed-projects
+    :category
+    frequencies)
+
+(-> data/processed-projects
+    :category
+    (nth 1000))
+
+(-> data/processed-projects
+    :goal)
+
+[4 2 4]
+
+[3 :a "s"]
+
+;; java boxing
+;; a primitive float value
+;; a boxed Float value
+
+(float-array [4 2 4])
+
+(-> data/processed-projects
+    :goal
+    .data)
+
+data/processed-projects
+
+
+(-> data/processed-projects
+    (tc/group-by [:category :country])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))})
+    (tc/order-by [:n] :desc))
+
+
+(-> data/processed-projects
+    tc/rows
+    (->> (take 9)))
+
+(-> data/processed-projects
+    tc/rows
+    first
+    vector?)
+
+
+(-> data/processed-projects
+    tc/rows
+    first
+    type)
+
+(-> data/processed-projects
+    (tc/rows :as-maps)
+    (->> (take 9)))
+
+
+(-> data/processed-projects
+    (tc/rows :as-maps)
+    first
+    map?)
+
+(-> data/processed-projects
+    (tc/rows :as-maps)
+    first
+    type)
+
+
+
+
+(-> data/processed-projects
+        (tc/group-by [:category :country])
+        (tc/aggregate {:n tc/row-count
+                       :rate-of-success (fn [ds]
+                                          (-> ds
+                                              :state
+                                              (tcc/eq "successful")
+                                              tcc/mean))})
+        (tc/order-by [:n] :desc)
+        (tc/select-rows (fn [row]
+                          (#{"Product Design" "Music"} (:category row)))))
+
+(-> data/processed-projects
+    :launched)
