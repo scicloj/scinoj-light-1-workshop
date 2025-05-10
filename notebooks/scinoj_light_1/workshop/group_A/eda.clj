@@ -5,7 +5,9 @@
   (:require [tablecloth.api :as tc]
             [tablecloth.column.api :as tcc]
             [scinoj-light-1.workshop.group-A.data :as data]
-            [tech.v3.dataset.print :as dsprint])) 
+            [tech.v3.dataset.print :as dsprint]
+            [tech.v3.datatype.datetime :as datetime]
+            [scicloj.tableplot.v1.plotly :as plotly])) 
 
 
 data/processed-projects
@@ -149,5 +151,33 @@ data/processed-projects
         (tc/select-rows (fn [row]
                           (#{"Product Design" "Music"} (:category row)))))
 
-(-> data/processed-projects
-    :launched)
+#_(datetime/long-temporal-field
+ :years
+ (data/processed-projects :launched))
+
+
+
+(-> data/clean-projects
+    (tc/group-by [:launch-year])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))})
+    (tc/order-by [:launch-year]))
+
+
+
+(-> data/clean-projects
+    (tc/group-by [:launch-year])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))})
+    (tc/order-by [:launch-year])
+    (plotly/layer-line {:=x :launch-year
+                        :=y :rate-of-success}))
+

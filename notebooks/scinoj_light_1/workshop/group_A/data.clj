@@ -2,7 +2,8 @@
   (:require [tablecloth.api :as tc]
             [clojure.string :as str]
             [clojure.math :as math]
-            [java-time.api :as java-time]))
+            [java-time.api :as java-time]
+            [tech.v3.datatype.datetime :as datetime]))
 
 (def raw-projects
   (tc/dataset "data/ks-projects-201801.csv.gz"
@@ -65,7 +66,12 @@ raw-projects
                           (/ u b))))
       (tc/map-columns :launched
                       [:launched]
-                      (partial java-time/local-date-time "yyyy-MM-dd HH:mm:ss"))))
+                      (partial java-time/local-date-time "yyyy-MM-dd HH:mm:ss"))
+      (tc/add-column :launch-year
+                 (fn [ds]
+                   (datetime/long-temporal-field
+                    :years
+                    (:launched ds))))))
 
 
 (java-time/local-date-time
@@ -74,3 +80,11 @@ raw-projects
 
 
 processed-projects
+
+(def clean-projects
+  (-> processed-projects
+      (tc/select-rows (fn [row]
+                        (<= 2009 (:launch-year row) 2017)))))
+
+
+clean-projects
