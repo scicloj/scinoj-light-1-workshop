@@ -1,0 +1,4 @@
+{:deps    {org.scicloj/noj {:mvn/version "2-beta18"}
+           org.clojars.generateme/inferme {:mvn/version "0.0.3-SNAPSHOT"}}
+ :paths ["src" "notebooks"]}
+
