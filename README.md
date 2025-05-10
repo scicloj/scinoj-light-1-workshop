@@ -1,5 +1,12 @@
 # scinoj-light-1-workshop
 
+This page will be gradually updated during the workshop.
+
+[workshop info](https://scicloj.github.io/scinoj-light-1/workshop.html)
+
+## Data source
+Data source: [Kickstarter Projects](https://www.kaggle.com/datasets/kemical/kickstarter-projects) dataset at Kaggle
+
 ## License
 
 Copyright © 2025 Scicloj
