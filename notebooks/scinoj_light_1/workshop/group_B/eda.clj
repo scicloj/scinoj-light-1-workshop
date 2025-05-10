@@ -117,4 +117,56 @@ data/processed-projects
 
 
 
+(-> data/processed-projects
+    tc/rows
+    first)
+
+(-> data/processed-projects
+    tc/rows
+    first
+    type)
+
+(-> data/processed-projects
+    tc/rows
+    first
+    vector?)
+
+(-> data/processed-projects
+    tc/rows
+    first
+    (nth 9))
+
+(-> data/processed-projects
+    (tc/rows :as-maps)
+    first)
+
+(-> data/processed-projects
+    (tc/rows :as-maps)
+    first
+    type)
+
+(-> data/processed-projects
+    (tc/rows :as-maps)
+    first
+    map?)
+
+(-> data/processed-projects
+    (tc/rows :as-maps)
+    first
+    :state)
+
+(-> data/processed-projects
+    (tc/drop-rows (fn [row]
+                    (= (:state row)
+                       "live")))
+    (tc/group-by [:main_category])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))})
+    (tc/order-by [:rate-of-success] :desc))
+
+
 
