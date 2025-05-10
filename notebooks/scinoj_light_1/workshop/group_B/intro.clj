@@ -1,3 +1,5 @@
+
+
 (ns scinoj-light-1.workshop.group-B.intro)
 
 ;; https://www.kaggle.com/datasets/kemical/kickstarter-projects
@@ -35,6 +37,7 @@
     :usd_goal_real 500.0}])
 
 
+
 data
 
 (type data)
@@ -68,6 +71,6 @@ data0
     vals)
 
 (macroexpand-1
- '(-> 0
-    data
-    vals))
+ '(-> (-> 0
+          data
+          vals)))
