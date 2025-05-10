@@ -1,5 +1,6 @@
 {:deps    {org.scicloj/noj {:mvn/version "2-beta18"}
            org.clojars.generateme/inferme {:mvn/version "0.0.3-SNAPSHOT"}
-           org.scicloj/scicloj.ml.smile {:mvn/version "7.5.2"}}
+           ;; org.scicloj/scicloj.ml.smile {:mvn/version "7.5.2"}
+           }
  :paths ["src" "notebooks"]}
 
