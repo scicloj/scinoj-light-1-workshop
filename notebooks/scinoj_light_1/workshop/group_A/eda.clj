@@ -33,6 +33,18 @@ data/processed-projects
     (tc/order-by [:n] :desc))
 
 
+(-> data/processed-projects
+    (tc/group-by [:main_category])
+    (dsprint/print-policy :repl)
+    (tc/aggregate {:n tc/row-count 
+                   #_(fn [ds] (tc/row-count ds))})
+    (tc/order-by [:n] :desc))
+
+
+
+
+
+
 (tcc/eq ["ABCD" "EFGH" "ABCD" "ABCD" "IJKL"]
         "ABCD")
 
@@ -49,6 +61,18 @@ data/processed-projects
 
 (-> data/processed-projects
     (tc/group-by [:category])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))})
+    (tc/order-by [:rate-of-success] :desc))
+
+
+
+(-> data/processed-projects
+    (tc/group-by [:main_category])
     (tc/aggregate {:n tc/row-count
                    :rate-of-success (fn [ds]
                                       (-> ds
@@ -180,4 +204,73 @@ data/processed-projects
     (tc/order-by [:launch-year])
     (plotly/layer-line {:=x :launch-year
                         :=y :rate-of-success}))
+
+
+
+(-> data/clean-projects
+    (tc/group-by [:category])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))}))
+
+
+
+(-> data/clean-projects
+    (tc/group-by [:main_category])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))})
+    (plotly/base {:=x :n
+                  :=y :rate-of-success})
+    (plotly/layer-point {:=mark-size 20
+                         :=mark-opacity 0.5})
+    (plotly/layer-text {:=text :main_category}))
+
+
+
+(-> data/clean-projects
+    (tc/group-by [:category])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))})
+    (tc/add-column :log10n (fn [ds]
+                             (tcc/log10 (:n ds))))
+    (plotly/base {:=x :n
+                  :=y :rate-of-success})
+    (plotly/layer-point {:=mark-size 10
+                         :=mark-opacity 0.5})
+    ;; (plotly/layer-text {:=text :category})
+    )
+
+
+
+
+
+(-> data/clean-projects
+    (tc/group-by [:main_category])
+    (tc/aggregate {:n tc/row-count
+                   :rate-of-success (fn [ds]
+                                      (-> ds
+                                          :state
+                                          (tcc/eq "successful")
+                                          tcc/mean))})
+    (tc/add-column :log10n (fn [ds]
+                             (tcc/log10 (:n ds))))
+    (plotly/base {:=x :log10n
+                  :=y :rate-of-success})
+    (plotly/layer-point {:=mark-size 20
+                         :=mark-opacity 0.5
+                         :=color :rate-of-success})
+    (plotly/layer-text {:=text :main_category}))
+
+
 
