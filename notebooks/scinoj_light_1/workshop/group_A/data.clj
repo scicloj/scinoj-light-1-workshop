@@ -65,7 +65,7 @@ raw-projects
                           (/ u b))))
       (tc/map-columns :launched
                       [:launched]
-                      #(java-time/local-date-time "yyyy-MM-dd HH:mm:ss" %))))
+                      (partial java-time/local-date-time "yyyy-MM-dd HH:mm:ss"))))
 
 
 (java-time/local-date-time
@@ -73,3 +73,4 @@ raw-projects
  "2016-01-13 18:13:53")
 
 
+processed-projects
