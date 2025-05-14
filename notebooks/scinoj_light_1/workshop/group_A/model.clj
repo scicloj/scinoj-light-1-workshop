@@ -49,7 +49,7 @@ test-data
 
 ;; the probability of success:
 
-;; sigmoid (A * log10goal + B * theater)
+;; sigmoid (A * log10goal + B * theater + C)
 
 (def model
   (fmreg/glm
