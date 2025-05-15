@@ -93,6 +93,20 @@
     (tc/order-by [:success-rate] :desc))
 
 
+(-> clean-projects
+    (tc/map-columns :successful
+                    [:state]
+                    #(if (= % "successful")
+                       1 0))
+    (tc/group-by [:main_category])
+    (tc/aggregate {:count tc/row-count
+                   :success-rate (fn [ds]
+                                   (tcc/mean (:successful ds)))})
+    (tc/order-by [:success-rate] :desc)
+    (plotly/layer-bar {:=x :main_category
+                       :=y :success-rate}))
+
+
 ;; ## Model
 
 (def features [:theater :log10goal])
