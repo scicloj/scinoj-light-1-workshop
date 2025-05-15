@@ -3,6 +3,20 @@
             [scicloj.metamorph.ml.rdatasets :as rdatasets]
             [tablecloth.column.api :as tcc]))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; hamf example 1 --- faster drop-in replacements for many operations
 (time (->> (range 10000000)
