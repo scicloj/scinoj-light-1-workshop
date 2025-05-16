@@ -92,72 +92,69 @@
 ;; ## Probabilistic programming
 
 
-(-> {:t (-> (inferme/infer :metropolis-hastings
+(-> {:x (-> (inferme/infer :metropolis-hastings
                            (inferme/make-model
                             []
-                            (let [d (inferme/distr :exponential
-                                                   {:mean 10})
-                                  t (inferme/sample d)]
+                            (let [d (inferme/distr :normal
+                                                   {:mu 10})
+                                  x (inferme/sample d)]
                               (inferme/model-result []
-                                                    {:t t})))
+                                                    {:x x})))
                            {:samples 10000})
-            (inferme/trace :t))}
+            (inferme/trace :x))}
     tc/dataset
-    (plotly/layer-histogram {:=x :t
-                             :=histogram-nbins 100}))
+    (plotly/layer-histogram {:=histogram-nbins 100}))
 
 
-
-(-> {:t (-> (inferme/infer :metropolis-hastings
+(-> {:x (-> (inferme/infer :metropolis-hastings
                            (inferme/make-model
                             []
-                            (let [d (inferme/distr :exponential
-                                                   {:mean 10})
-                                  t (inferme/sample d)]
+                            (let [d (inferme/distr :normal
+                                                   {:mu 10})
+                                  x (inferme/sample d)]
+                              (inferme/model-result []
+                                                    {:x x})))
+                           {:samples 10000})
+            (inferme/trace :x))}
+    tc/dataset
+    (tc/select-rows (fn [{:keys [x]}]
+                      (< x 11)))
+    (plotly/layer-histogram {:=histogram-nbins 100}))
+
+
+
+
+
+(-> {:x (-> (inferme/infer :metropolis-hastings
+                           (inferme/make-model
+                            []
+                            (let [d (inferme/distr :normal
+                                                   {:mu 10})
+                                  x (inferme/sample d)]
                               (inferme/model-result [(inferme/condition
-                                                      (< t 10))]
-                                                    {:t t})))
+                                                      (< x 11))]
+                                                    {:x x})))
                            {:samples 10000})
-            (inferme/trace :t))}
+            (inferme/trace :x))}
     tc/dataset
-    (plotly/layer-histogram {:=x :t
-                             :=histogram-nbins 100}))
+    (plotly/layer-histogram {:=histogram-nbins 100}))
 
 
-(-> {:t (-> (inferme/infer :metropolis-hastings
+
+(-> {:x (-> (inferme/infer :metropolis-hastings
                            (inferme/make-model
                             [m (inferme/distr :exponential)]
-                            (let [d (inferme/distr :exponential
-                                                   {:mean m})
-                                  t (inferme/sample d)]
+                            (let [d (inferme/distr :normal
+                                                   {:mu m})
+                                  x (inferme/sample d)]
                               (inferme/model-result [(inferme/observe
                                                       d
-                                                      [1 2 1 2 1 2 1 2])]
-                                                    {:t t})))
+                                                      [10 11 10 11 10 11])]
+                                                    {:x x})))
                            {:samples 10000})
-            (inferme/trace :t))}
+            (inferme/trace :x))}
     tc/dataset
-    (plotly/layer-histogram {:=x :t
-                             :=histogram-nbins 100}))
-
-
-
-
-(-> {:m (-> (inferme/infer :metropolis-hastings
-                           (inferme/make-model
-                            [m (inferme/distr :exponential)]
-                            (let [d (inferme/distr :exponential
-                                                   {:mean m})
-                                  t (inferme/sample d)]
-                              (inferme/model-result [(inferme/observe
-                                                      d
-                                                      [1 2 1 2 1 2 1 2])]
-                                                    {:t t})))
-                           {:samples 10000})
-            (inferme/trace :m))}
-    tc/dataset
-    (plotly/layer-histogram {:=x :m
-                             :=histogram-nbins 100}))
+    (plotly/layer-histogram {:=histogram-nbins 100}))
 
 
 
