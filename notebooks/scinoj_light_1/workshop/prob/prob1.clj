@@ -141,6 +141,8 @@
 
 
 
+
+
 (-> {:x (-> (inferme/infer :metropolis-hastings
                            (inferme/make-model
                             [m (inferme/distr :exponential)]
@@ -156,6 +158,25 @@
     tc/dataset
     (plotly/layer-histogram {:=histogram-nbins 100}))
 
+
+
+(-> {:m (-> (inferme/infer :metropolis-hastings
+                           (inferme/make-model
+                            [m (inferme/distr :exponential)]
+                            (let [d (inferme/distr :normal
+                                                   {:mu m})
+                                  x (inferme/sample d)]
+                              (inferme/model-result [(inferme/observe
+                                                      d
+                                                      [10 11 10 11 10 11])]
+                                                    {:x x})))
+                           {:samples 10000})
+            (inferme/trace :m))}
+    tc/dataset
+    (tc/add-column :i (range))
+    (plotly/layer-line {:=x :i
+                        :=y :m
+                        :=histogram-nbins 100}))
 
 
 ;; ## Read & preprocess
@@ -230,6 +251,7 @@
      :coefficients
      (map :estimate)
      (zipmap (cons :intercept features)))
+
 
 
 
