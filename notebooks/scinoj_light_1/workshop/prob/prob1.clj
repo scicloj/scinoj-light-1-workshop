@@ -30,6 +30,12 @@
 ;; Bayesian statistics
 
 
+;; Fastmath 3 WIP docs
+;; https://generateme.github.io/fastmath/clay/
+
+;; Inferme (probabilistic programming)
+;; https://github.com/generateme/inferme
+
 
 (let [rng (random/rng :jdk 1)]
   (->> #(random/irandom rng 6)
