@@ -1,5 +1,8 @@
 {:deps    {org.scicloj/noj {:mvn/version "2-beta18"}
            org.clojars.generateme/inferme {:mvn/version "0.0.3-SNAPSHOT"}
-           dorothy/dorothy {:mvn/version "0.0.7"}}
+           dorothy/dorothy {:mvn/version "0.0.7"}
+           xyz.zcaudate/std.lang {:mvn/version "4.0.9"}
+           xyz.zcaudate/rt.basic {:mvn/version "4.0.9"}
+           org.scicloj/tablemath {:mvn/version "1-alpha2"}}
  :paths ["src" "notebooks"]}
 
