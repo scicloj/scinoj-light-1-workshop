@@ -2,6 +2,8 @@
 
 ;; https://www.kaggle.com/datasets/kemical/kickstarter-projects
 
+;; https://scicloj.github.io/noj/
+
 ;; ## Setup
 
 (ns scinoj-light-1.workshop.start.walkthrough
