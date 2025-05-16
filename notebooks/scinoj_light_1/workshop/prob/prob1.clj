@@ -18,7 +18,20 @@
             [tech.v3.datatype.datetime :as datetime]))
 
 
-(let [rng (random/rng :jdk seed)]
+
+;; probability
+
+;; statistics
+
+;; descriptive statistics
+
+;; statistical inference
+
+;; Bayesian statistics
+
+
+
+(let [rng (random/rng :jdk 1)]
   (->> #(random/irandom rng 6)
        (repeatedly 100)
        (reduce +)))
