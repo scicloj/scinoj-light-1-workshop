@@ -4,17 +4,22 @@
 
 ;; https://scicloj.github.io/noj/
 
+
+;; cynosure 
+;; scinojure
+
 ;; ## Setup
 
 (ns scinoj-light-1.workshop.start.walkthrough
-  (:require [tablecloth.api :as tc]
+  (:require [tablecloth.api :as tc] ; Tablecloth is inspired by dplyr and friends.
             [clojure.string :as str]
             [clojure.math :as math]
             [java-time.api :as java-time]
             [tech.v3.datatype.datetime :as datetime]
             [tech.v3.dataset.print :as dsprint]
             [tech.v3.datatype.datetime :as datetime]
-            [scicloj.tableplot.v1.plotly :as plotly]
+            [scicloj.tableplot.v1.plotly :as plotly] ;; Tableplot is inspired by ggplot
+            ;; .. but also has a Plotly.js target (like ggplot does).
             [tablecloth.column.api :as tcc]
             [fastmath.ml.regression :as fmreg]))
 
@@ -23,6 +28,16 @@
 (tc/dataset "data/ks-projects-201801.csv.gz"
             {:num-rows 100})
 
+(-> (tc/dataset "data/ks-projects-201801.csv.gz"
+                {:num-rows 100})
+    map?)
+
+(-> (tc/dataset "data/ks-projects-201801.csv.gz"
+                {:num-rows 100})
+    keys)
+
+
+
 (tc/dataset "data/ks-projects-201801.csv.gz"
             {:num-rows 100
              :key-fn (fn [s]
@@ -30,12 +45,15 @@
                            (str/replace #" " "_")
                            keyword))})
 
+
 (def raw-projects
   (tc/dataset "data/ks-projects-201801.csv.gz"
               {:key-fn (fn [s]
                          (-> s
                              (str/replace #" " "_")
                              keyword))}))
+
+raw-projects
 
 (tc/info raw-projects)
 
@@ -58,15 +76,52 @@
                         (:launched ds))))))
 
 (-> processed-projects
+    tc/info)
+
+
+
+
+(-> processed-projects
     (tc/group-by [:launch-year :state])
     (tc/aggregate {:count tc/row-count})
     (tc/order-by [:launch-year :state]))
+
+
 
 (def clean-projects
   (-> processed-projects
       (tc/select-rows (fn [{:keys [launch-year state]}]
                         (and (<= 2009 launch-year 2017)
                              (not= state "live"))))))
+
+
+
+(-> {:x (range 6)
+     :y [:A :B :A :B :A :B]}
+    tc/dataset
+    (tc/map-columns :z
+                    [:x :y]
+                    (fn [x y]
+                      (str x "~~~~" y))))
+
+
+(-> {:x (range 6)
+     :y [:A :B :A :B :A :B]}
+    tc/dataset
+    (tc/add-column :z
+                   (fn [ds]
+                     (map #(* 1000 %)
+                          (:x ds)))))
+
+(-> {:x (range 6)
+     :y [:A :B :A :B :A :B]}
+    tc/dataset
+    (tc/add-column :z
+                   (fn [ds]
+                     (tcc/* (:x ds) 1000))))
+
+(-> clean-projects
+    (tc/group-by [:launch-year :state]))
 
 (-> clean-projects
     (tc/group-by [:launch-year :state])
@@ -75,7 +130,6 @@
 
 
 ;; ## Explore
-
 
 (-> clean-projects
     (tc/group-by [:main_category])
@@ -108,7 +162,6 @@
     (plotly/layer-bar {:=x :main_category
                        :=y :success-rate}))
 
-
 ;; ## Model
 
 (def features [:theater :log10goal])
@@ -131,19 +184,33 @@
       (tc/group-by :$split-name {:result-type :as-map})
       (update-vals #(tc/drop-columns % [:$split-name :$split-id]))))
 
+(keys split-projects)
+
 (def train-projects
   (:train split-projects))
 
 (def test-projects
   (:test split-projects))
 
+;; general linear model
+;; (specifically, we use logistic regression with the sigmoid function)
+
+;; probaility of success = sigmoid ( A + B * theater + C * log10goal )
+
 (def model
   (fmreg/glm (:successful train-projects)
              (-> train-projects
                  (tc/select-columns features)
                  tc/rows)
-             {:family :binomial
-              :tol 0.5}))
+             {:family :binomial ; which means estimating probabilities
+              :tol 0.5 ; for numerical tolerance
+              }))
+
+(model [0 4])
+(model [1 4])
+
+(-> model
+    :coefficients)
 
 
 (-> test-projects
