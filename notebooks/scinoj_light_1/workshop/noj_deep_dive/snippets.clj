@@ -6,8 +6,14 @@
             [fastmath.random :as random]
             [tech.v3.datatype :as dt]))
 
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ## A little example
+
+
 
 (let [n 100]
   (-> {:x (range n)}
@@ -15,7 +21,8 @@
       (tc/add-column :y
                      (fn [{:keys [x]}]
                        (tcc/+ 9
-                              (->> (dt/make-reader :float32 n (random/grand))
+                              (->> (dt/make-reader
+                                    :float32 n (random/grand))
                                    (reductions +))
                               (tcc/* 0.1 x)
                               (tcc/sq (tcc/* 0.1 (tcc/- x 50))))))
@@ -23,6 +30,72 @@
       plotly/layer-line
       (plotly/layer-smooth {:=design-matrix [[:x '(identity :x)]
                                              [:x2 '(* :x :x)]]})))
+
+
+
+
+
+(def ds
+  (-> {:x (repeatedly 9 rand)}
+      tc/dataset
+      (tc/add-column :i (range))))
+
+(type ds)
+
+(map? ds)
+
+(keys ds)
+
+(vals ds)
+
+(-> ds
+    (tc/rows :as-maps))
+
+(-> ds
+    (tc/rows :as-maps)
+    first
+    map?)
+
+(-> ds
+    (tc/rows :as-maps)
+    first
+    type)
+
+(-> ds
+    (tc/rows :as-maps)
+    first
+    (assoc :z 99))
+
+(-> ds
+    (tc/rows :as-maps)
+    first
+    (assoc :z 99)
+    type)
+
+(-> ds
+    tc/rows)
+
+(-> ds
+    tc/rows
+    first
+    vector?)
+
+(-> ds
+    tc/rows
+    first
+    type)
+
+(-> ds
+    tc/rows
+    first
+    (conj 99))
+
+(-> ds
+    tc/rows
+    first
+    (conj 99)
+    type)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ## hamf example 1 --- faster drop-in replacements for many operations
@@ -40,6 +113,9 @@
            (lznc/partition-all 10000)
            (lznc/map hamf/sort)
            (count)))
+
+"lazy and noncaching"
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ## hamf example 2 --- sets with faster operations (that still respect clojure equality)
@@ -83,12 +159,17 @@ hm
 
 i
 
+(type i)
+
 (require '[tech.v3.datatype :as dt])
 
 (dt/shape i)
 
 (require '[tech.v3.tensor :as dtt])
 (def t (dtt/ensure-tensor i))
+
+t
+
 
 ;; top left pixel
 (t 0 0)
@@ -97,6 +178,25 @@ i
 (t 1 0)
 
 ;; Note, uint8 is also a nice type for representing this data, typically much less convenient to work with on the JVM
+
+
+
+
+((dfn/* t 1000)
+ 4 5)
+
+
+(type (dfn/* t 1000))
+
+
+
+
+
+
+
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ## dtype - dfn/+ between ds columns
@@ -108,7 +208,14 @@ ds
 
 (require '[tech.v3.datatype.functional :as dfn])
 
-(dfn/+ (:a ds) (:b ds))
+(map? ds)
+(keys ds)
+
+(-> ds
+    (assoc :c (dfn/+ (:a ds) (:b ds))))
+
+ds
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ## tech.ml.dataset / Tablecloth
